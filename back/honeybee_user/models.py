@@ -1,7 +1,11 @@
 import uuid
 from django.db import models
+<<<<<<< Updated upstream
 from django.contrib.auth.base_user import AbstractBaseUser,BaseUserManager
 from django.contrib.auth import models as auth_models
+=======
+from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
+>>>>>>> Stashed changes
 
 class HoneyBeeManager(BaseUserManager):
     def create_user(self, id, name, email, password,**kwargs):
@@ -71,9 +75,16 @@ class HoneyBeeUser(AbstractBaseUser):
     objects = HoneyBeeManager()
 
     USERNAME_FIELD = 'id'
+<<<<<<< Updated upstream
     REQUIRED_FIELDS = ('email','name',)
+=======
+    REQUIRED_FIELDS = ('email',)
+    
+    objects = HoneyBeeManager()
+>>>>>>> Stashed changes
 
     class Meta:
+        db_table='honeybee_user'
         verbose_name = ('user')
         verbose_name_plural = ('users')
 
