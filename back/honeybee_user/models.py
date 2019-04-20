@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser,BaseUserManager
 from django.contrib.auth import models as auth_models
 
+
 class HoneyBeeManager(BaseUserManager):
     def create_user(self, id, name, email, password,**kwargs):
         if not id:
@@ -90,3 +91,10 @@ class HoneyBeeUser(AbstractBaseUser):
 
     def __str__(self):
         return self.name
+
+
+class PictureInfo():
+    """
+    id를 외래키로 사진에 대한 정보를 저장할 모델
+    """
+    
