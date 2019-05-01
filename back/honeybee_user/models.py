@@ -100,17 +100,15 @@ def user_path(instance, filename): #파라미터 instance는 Photo 모델을 의
     pid = ''.join(arr) # 8자리 임의의 문자를 만들어 파일명으로 지정
     extension = filename.split('.')[-1] # 배열로 만들어 마지막 요소를 추출하여 파일확장자로 지정
     # file will be uploaded to MEDIA_ROOT/user_<id>/<random>
-    return '%s/%s.%s' % (instance.owner.username, pid, extension) # 예 : wayhome/abcdefgs.png
+    return '%s/%s.%s' % (instance.owner.name, pid, extension) # 예 : wayhome/abcdefgs.png
 
 class PictureInfo(models.Model):
-
-    pic_id = models.IntegerField()
     pic_address = models.ImageField(upload_to = user_path)
-    owner = models.ForeignKey()
+    owner = models.ForeignKey(HoneyBeeUser,on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
     like = models.IntegerField(default=0)
     download = models.IntegerField(default=0)
-    share = models.BooleanField(default=true)
+    share = models.BooleanField(default=True)
 
     """
     id를 외래키로 사진에 대한 정보를 저장할 모델
