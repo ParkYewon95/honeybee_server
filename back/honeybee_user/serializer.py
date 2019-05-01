@@ -7,9 +7,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = HoneyBeeUser
         fields = ('id','name','profile_pic','introduce','total_like','total_down')
-        read_only_fields=('id')
+        read_only_fields= ('id',)
 
-"""
 class PicInfoSerializer(serializers.ModelSerializer):
     #user pk
     user = serializers.PrimaryKeyRelatedField(many=True,read_only=True)
@@ -17,6 +16,6 @@ class PicInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PictureInfo
         field=('user')
-"""
+
 
 
