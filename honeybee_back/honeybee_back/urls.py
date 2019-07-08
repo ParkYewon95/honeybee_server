@@ -16,10 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.conf import settings
 from django.urls import path,include
+from django.conf.urls import url
+from honeybee_user import urls
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('honeybee_user.urls')),
+    url(r"^api/", include(urls)),
+    url(r"^api/auth", include("knox.urls")),
+    #path(r^'accounts/',include(django.contrib.auth.urls)),
 ]
 urlpatterns += static('/uploads/', document_root=settings.MEDIA_ROOT)
