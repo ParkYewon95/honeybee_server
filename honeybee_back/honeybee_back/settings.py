@@ -134,6 +134,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 # 로그인 성공시 리다이렉트
 LOGIN_REDIRECT_URL = '/'
 
+#기본권한을 knox의 token 기반으로 설정. 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10,

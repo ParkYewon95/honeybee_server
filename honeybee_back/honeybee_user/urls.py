@@ -3,7 +3,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from honeybee_user import views
 from django.contrib.auth import views as auth_views
 from knox import views as knox_views
-from .views import RegistrationAPI,LoginAPI,UserAPI ,UserViewSet
+from .views import RegistrationAPI,LoginAPI,UserAPI ,UserViewSet,PictureAPI
 
 
 user_list = views.UserViewSet.as_view({
@@ -26,12 +26,14 @@ urlpatterns = [
     path('users/', user_list, name='user-list'),
     path('users/<int:pk>/', user_detail, name='user-detail'),
     
+    #path('mypage/',views.PictureViewSet.as_view()),
+    path('auth/postpic/',views.PictureList,name = 'photo'),
     path('auth/login/',views.LoginAPI.as_view(),name='login'),
-    #path('auth/logout/',knox_views.LogoutView.as_view,name='logout'),
+    #path('auth/logout/',knox_views.LogoutView.as_view,name='knox_logout'),
     path('auth/register/',views.RegistrationAPI.as_view(),name='sign_up'),
     #path('auth/login/',LoginAPI.as_view()),
     path('auth/user/',views.UserAPI.as_view(),name='user'),
-    #path('sign_up/',auth_views.LoginView.as_view(),name='login'),
+  
     
 ]
 

@@ -1,5 +1,5 @@
 from .models import HoneyBeeUser,PictureInfo,TmpPicture
-from .serializers import CreateUserSerializer,HoneyBeeUserSerializer,PicInfoSerializer,UserSerializer,TmpPictureInfoSerializer,LoginUserSerializer
+from .serializers import CreatePictureSerializer,CreateUserSerializer,HoneyBeeUserSerializer,PicInfoSerializer,UserSerializer,TmpPictureInfoSerializer,LoginUserSerializer
 from knox.views import LoginView as KnoxLoginView
 from knox.models import AuthToken
 from django.http import Http404
@@ -25,13 +25,14 @@ import base64
 #         serializer = AuthTokenSerializer(data=request.data)
 #         serializer.is_valid(raise_exception=True)
 #         user = serializer.validated_data['user']
-#         login(request, user)
+#         # login(request, user)
 #         return super(LoginView, self).post(request, format=None)
 
 class RegistrationAPI(generics.GenericAPIView): 
     serializer_class= CreateUserSerializer 
-  
+        
     def post(self,request,*args, **kwargs):
+        
         if len(request.data["username"]) < 4 or len(request.data["password"]) < 4 :
             body = {"message":"short field"}
             return Response(body, status=status.HTTP_400_BAD_REQUEST)
@@ -41,15 +42,15 @@ class RegistrationAPI(generics.GenericAPIView):
         user = serializer.save()
         
         (instance, token) = AuthToken.objects.create(user)
-        print("username : "+ request.data["username"])
-        print("password: " + request.data["password"])
-
+       
         return Response(
             {
                 "user": UserSerializer(user,context=self.get_serializer_context()).data,
                 "token": token,
             }
         )
+
+
 
 class LoginAPI(generics.GenericAPIView):
     serializer_class = LoginUserSerializer
@@ -127,7 +128,6 @@ class UserViewSet(viewsets.ModelViewSet):
 # owner별로 picture         
 class PictureViewSet(viewsets.ModelViewSet):
     permission_classes=[permissions.IsAuthenticated, ]
-    #queryset = User.objects.all()
     serializer_class = PicInfoSerializer
 #    serializer_class = UserSerializer
     
@@ -136,19 +136,28 @@ class PictureViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
       
-
+#사진 List 표시 - main
 class PictureList(APIView):
+    permission_classes=[permissions.IsAuthenticated, ]
+    pictureinfo = PictureInfo.objects.all()
+    #serializer = PicInfoSerializer
     def get(self, request, format=None):
-        pictureinfo = PictureInfo.objects.all()
         serializer = PicInfoSerializer(pictureinfo, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
-        serializer = PicInfoSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+def PictureAPI(request):
+
+    # if serializer.is_valid():
+    #     serializer.save()
+    #     return Response(serializer.data)
+    # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, format=None):
+        pictureinfo = PictureInfo.objects.all()
+        serializer = CreatePictureSerializer(pictureinfo, many=True)
+        return Response(serializer.data)
+
+
 
 class PictureDetail(APIView):
     def get_object(self, pk):

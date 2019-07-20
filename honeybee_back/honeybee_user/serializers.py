@@ -18,18 +18,16 @@ class LoginUserSerializer(serializers.Serializer):
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username','email','password',)
+        fields = ('username','email','password')
         extra_kwargs = {
             'password' : {'write_only':True}
         }
     def create(self,validated_data):
-        # user = User.objects.create_user(
-        #      validated_data["username"],None, validated_data["password"]
-        #  )
         user = User.objects.create_user(**validated_data)
         return user
 
 class UserSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = User
         fields = '__all__'
@@ -54,11 +52,22 @@ class HoneyBeeUserSerializer(serializers.ModelSerializer):
 
 
 class PicInfoSerializer(serializers.ModelSerializer):
-    #user = serializers.PrimaryKeyRelatedField(read_only=True)
-    userid = serializers.CharField(max_length=None, min_length=None,trim_whitespace=True,source='get_username',read_only=True)
+    owner = serializers.CharField(max_length=None, min_length=None,trim_whitespace=True,source='get_username',read_only=True)
     class Meta:
         model = PictureInfo
-        fields =('username','owner','pic_address','like','download','share',)
+        fields = '__all__'
+    # def create(self, request, *args, **kwargs):
+    #     return super().create(request, *args, **kwargs)
+
+class CreatePictureSerializer(serializers.ModelSerializer):
+    owner = serializers.CharField(max_length=None, min_length=None,trim_whitespace=True,source='get_username',read_only=True)
+    class Meta:
+        model = PictureInfo
+        fields =('owner','pic_address','share') 
+       
+    def create(self,validated_data):
+        picture = PictureInfo.objects.create(**validated_data)
+        return picture
 
 
 class TmpPictureInfoSerializer(serializers.ModelSerializer):

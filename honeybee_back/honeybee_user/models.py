@@ -4,16 +4,6 @@ from django.contrib.auth.models import User
 from random import choice
 import string 
 
-# class SignupForm(ModelForm):
-#     password_check = forms.CharField(max_length=200,widget=forms.PasswordInput())
-#     #field_order는 만들어지는 입력양식의 순서 정해주는 것.
-#     field_order=['username','password','password_check','email']
-
-#     class Meta:
-#         model = User
-#         widgets = {'password':forms.PasswordInput}
-#         fields = ['username','password','email']
-
 def profile_path(instance, filename): #파라미터 instance는 Photo 모델을 의미 filename은 업로드 된 파일의 파일 이름
     arr = [choice(string.ascii_letters) for _ in range(8)]
     pid = ''.join(arr) # 8자리 임의의 문자를 만들어 파일명으로 지정
@@ -54,16 +44,19 @@ def tmp_user_path(instance,filename): #파라미터 instance는 Photo 모델을 
     return '%s/%s.%s' % ("temp", pid, extension) # 예 : wayhome/abcdefgs.png
 
 class PictureInfo(models.Model):
-    pic_address = models.ImageField(upload_to = user_path)
+
     owner = models.ForeignKey(User,related_name="pic_own",on_delete=models.CASCADE,null=True)
+    pic_address = models.ImageField(upload_to = user_path)
     created_date = models.DateTimeField(auto_now_add=True)
     like = models.IntegerField(default=0)
     download = models.IntegerField(default=0)
     share = models.BooleanField(default=True)
     
-    @property
-    def get_username(self):
-        return self.owner.username
+    def picture_save(self):
+        self.save()
+    # @property
+    # def get_username(self):
+    #     return self.owner.username
 
 
 class TmpPicture(models.Model):
