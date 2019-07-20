@@ -14,7 +14,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.decorators import detail_route
 from rest_framework.decorators import list_route
-from .transfer import Transfer
+from style_transfer import Transfer
 import os
 import base64
 
@@ -221,7 +221,7 @@ class TmpPictureList(APIView):
             result_pic_name = '/results/rest_'+pic_name.split('/')[-1].split('.')[0]+'.png'
 
             # style transfer, save image
-            transfer = Transfer(filter_info)
+            transfer = Transfer(filter_info,"honeybee_user")
             transfer.transform_image(os.getcwd()+pic_name, os.getcwd()+result_pic_name)
 
             # get style changed image
