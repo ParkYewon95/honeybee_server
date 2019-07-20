@@ -138,12 +138,19 @@ class PictureViewSet(viewsets.ModelViewSet):
       
 #사진 List 표시 - main
 class PictureList(APIView):
-    permission_classes=[permissions.IsAuthenticated, ]
-    pictureinfo = PictureInfo.objects.all()
-    #serializer = PicInfoSerializer
+    #permission_classes=[permissions.IsAuthenticated, ]
     def get(self, request, format=None):
+        pictureinfo = PictureInfo.objects.all()
         serializer = PicInfoSerializer(pictureinfo, many=True)
         return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = PicInfoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 def PictureAPI(request):
 
@@ -154,8 +161,15 @@ def PictureAPI(request):
 
     def get(self, request, format=None):
         pictureinfo = PictureInfo.objects.all()
-        serializer = CreatePictureSerializer(pictureinfo, many=True)
+        serializer = PicInfoSerializer(pictureinfo)
         return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = CreatePictureSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 

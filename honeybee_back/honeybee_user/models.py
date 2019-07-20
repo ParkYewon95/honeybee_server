@@ -44,7 +44,6 @@ def tmp_user_path(instance,filename): #파라미터 instance는 Photo 모델을 
     return '%s/%s.%s' % ("temp", pid, extension) # 예 : wayhome/abcdefgs.png
 
 class PictureInfo(models.Model):
-
     owner = models.ForeignKey(User,related_name="pic_own",on_delete=models.CASCADE,null=True)
     pic_address = models.ImageField(upload_to = user_path)
     created_date = models.DateTimeField(auto_now_add=True)
