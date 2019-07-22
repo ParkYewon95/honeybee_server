@@ -52,7 +52,7 @@ class HoneyBeeUserSerializer(serializers.ModelSerializer):
 
 
 class PicInfoSerializer(serializers.ModelSerializer):
-    owner = serializers.CharField(max_length=None, min_length=None,trim_whitespace=True,source='get_username',read_only=True)
+    #owner = serializers.CharField(max_length=None, min_length=None,trim_whitespace=True,source='get_username',read_only=True)
     class Meta:
         model = PictureInfo
         fields = '__all__'

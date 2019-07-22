@@ -17,6 +17,7 @@ from rest_framework.decorators import list_route
 from style_transfer import Transfer
 import os
 import base64
+from pprint import pprint
 
 # class LoginView(KnoxLoginView):
 #     authentication_classes = (permissions.IsAuthenticated)
@@ -69,14 +70,6 @@ class LoginAPI(generics.GenericAPIView):
             }
         )
 
-class UserAPI(generics.RetrieveAPIView):
-    permission_classes=[permissions.IsAuthenticated]
-    serializer_class = UserSerializer
-
-    def get_object(self):
-        return self.request.user
-
-
 class UserList(APIView):
     def get(self,request,format=None):
         honeybee_user = HoneyBeeUser.objects.all()
@@ -114,25 +107,47 @@ class UserDetail(APIView):
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class UserAPI(generics.RetrieveAPIView):
+    permission_classes=[permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes=[permissions.IsAuthenticated, ]
-    #queryset = User.objects.all()
-    #serializer_class = HoneyBeeUserSerializer
     serializer_class = UserSerializer
     
-    def get_queryset(self):
-        return self.request.user.objects.all()
+    def get_object(self):
+        return self.request.user
+    # def get_queryset(self):
+    #     return User.objects.all()
+   
+    # def get_queryset(self):
+    #     return self.request.user.objects.all()
     def perform_create(self, serializer):
         serializer.save(username=self.request.user)
 
 # owner별로 picture         
 class PictureViewSet(viewsets.ModelViewSet):
+    
     permission_classes=[permissions.IsAuthenticated, ]
     serializer_class = PicInfoSerializer
-#    serializer_class = UserSerializer
-    
+
     def get_queryset(self):
-        return self.request.user.objects.all()
+        id = self.request.user.id
+        # print("{id}".format(id=id))
+        pictures = PictureInfo.objects.all()
+        result = []
+        for picture in pictures:
+            # print("picture_owner:{owner}".format(owner=picture.owner))
+            # pprint(vars(picture))
+            if picture.owner_id == id:
+                result.append(picture)
+        return result
+
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
       
@@ -152,24 +167,24 @@ class PictureList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def PictureAPI(request):
+# def PictureAPI(request):
 
-    # if serializer.is_valid():
-    #     serializer.save()
-    #     return Response(serializer.data)
-    # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     # if serializer.is_valid():
+#     #     serializer.save()
+#     #     return Response(serializer.data)
+#     # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, format=None):
-        pictureinfo = PictureInfo.objects.all()
-        serializer = PicInfoSerializer(pictureinfo)
-        return Response(serializer.data)
+#     def get(self, request, format=None):
+#         pictureinfo = PictureInfo.objects.all()
+#         serializer = PicInfoSerializer(pictureinfo)
+#         return Response(serializer.data)
 
-    def post(self, request, format=None):
-        serializer = CreatePictureSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request, format=None):
+#         serializer = CreatePictureSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
