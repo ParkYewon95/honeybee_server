@@ -4,6 +4,7 @@ from knox.views import LoginView as KnoxLoginView
 from knox.models import AuthToken
 from django.http import Http404
 from django.http import HttpResponse
+from django.http import JsonResponse
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from rest_framework.authtoken.serializers import AuthTokenSerializer
@@ -70,6 +71,7 @@ class LoginAPI(generics.GenericAPIView):
             }
         )
 
+
 class UserList(APIView):
     def get(self,request,format=None):
         honeybee_user = HoneyBeeUser.objects.all()
@@ -130,6 +132,24 @@ class UserViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(username=self.request.user)
 
+def check_id(request):
+    
+    username = request.GET.get('username')
+    try:
+        user= User.objects.get(username=username)
+    except:
+        user = None
+
+    if user is None:
+        overlap="pass"
+    else:
+        overlap="fail"
+
+    context = {'overlap':overlap}
+
+    return JsonResponse(context)
+
+
 # owner별로 picture         
 class PictureViewSet(viewsets.ModelViewSet):
     
@@ -138,6 +158,7 @@ class PictureViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         id = self.request.user.id
+        #id = self.request.user.username
         # print("{id}".format(id=id))
         pictures = PictureInfo.objects.all()
         result = []
@@ -153,7 +174,7 @@ class PictureViewSet(viewsets.ModelViewSet):
       
 #사진 List 표시 - main
 class PictureList(APIView):
-    #permission_classes=[permissions.IsAuthenticated, ]
+
     def get(self, request, format=None):
         pictureinfo = PictureInfo.objects.all()
         serializer = PicInfoSerializer(pictureinfo, many=True)

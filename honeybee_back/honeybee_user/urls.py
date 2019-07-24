@@ -48,11 +48,8 @@ urlpatterns = [
     path('auth/login/',views.LoginAPI.as_view(),name='login'),
     #path('auth/logout/',knox_views.LogoutView.as_view,name='knox_logout'),
     path('auth/register/',views.RegistrationAPI.as_view(),name='sign_up'),
-    #path('auth/login/',LoginAPI.as_view()),
-
-#    path('auth/user/',views.UserAPI.as_view(),name='user'),
     
-    
+    path('checkid/',views.check_id,name='check_id')
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

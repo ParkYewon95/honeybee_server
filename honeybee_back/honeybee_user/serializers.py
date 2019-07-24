@@ -4,17 +4,6 @@ from .models import HoneyBeeUser, PictureInfo,TmpPicture
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 
-
-class LoginUserSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
-
-    def validate(self, data):
-        user = authenticate(**data)
-        if user and user.is_active:
-            return user
-        raise serializers.ValidationError("Unable to log in with provided credentials.") 
-
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -31,6 +20,16 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+class LoginUserSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, data):
+        user = authenticate(**data)
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError("Unable to log in with provided credentials.") 
   
 class HoneyBeeUserSerializer(serializers.ModelSerializer):
     #user = UserSerializer(required=True)
